@@ -10,7 +10,7 @@ public class Utilities : MonoBehaviour
      */
     public static List<Vector2> ResamplePoints(List<Vector2> _rawPoints)
     {
-        float interval = PathLength(_rawPoints) / (GestureRecogniser.numPoints - 1);
+        float interval = PathLength(_rawPoints) / (GestureRecogniser.resamplePoints - 1);
         float distance = 0;
         List<Vector2> newPoints = new List<Vector2>();
         newPoints.Add(_rawPoints[0]);

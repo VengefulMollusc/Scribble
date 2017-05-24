@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StrokePath : MonoBehaviour
+public class StrokePath
 {
 
     private string gestureName;
@@ -30,5 +30,10 @@ public class StrokePath : MonoBehaviour
     public List<Vector2> Points()
     {
         return points;
+    }
+
+    public string Name()
+    {
+        return gestureName;
     }
 }
