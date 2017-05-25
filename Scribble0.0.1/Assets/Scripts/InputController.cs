@@ -46,6 +46,13 @@ public class InputController : MonoBehaviour {
         if (Input.GetMouseButtonUp(0) && drawing)
         {
             StrokePath path = currentPath.GetStrokePath();
+            string recognised = gesture.Recognise(path);
+
+            // RESULT OF GESTURE RECOGNITION HERE
+            // EG create circle/line etc
+
+            drawing = false;
+
 
             // draws points to test
             // Delete section once proper recognition working
@@ -63,14 +70,6 @@ public class InputController : MonoBehaviour {
             {
                 tempPath.AddPoint(Camera.main.ScreenToWorldPoint(points[i]));
             }
-
-
-            string recognised = gesture.Recognise(path);
-
-            // RESULT OF GESTURE RECOGNITION HERE
-            // EG create circle/line etc
-
-            drawing = false;
         }
 
         if (Input.GetMouseButton(0))

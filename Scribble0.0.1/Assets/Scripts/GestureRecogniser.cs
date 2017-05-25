@@ -8,7 +8,7 @@ public class GestureRecogniser : MonoBehaviour {
     public static int resamplePoints = 64;
 
     [SerializeField]
-    public static float rescaleSize = 100f;
+    public static float rescaleSize = 250f;
 
     //[SerializeField]
     //private float recognitionThreshold = 0.8f;
