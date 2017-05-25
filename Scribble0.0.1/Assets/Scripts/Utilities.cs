@@ -127,7 +127,6 @@ public class Utilities : MonoBehaviour
             newP.y = p.y * _size / b.y;
             newPoints.Add(newP);
         }
-
         return newPoints;
     }
 

@@ -28,6 +28,9 @@ public class GestureRecogniser : MonoBehaviour {
         if (loader == null) Debug.LogError("No TemplateLoader found");
 
         LoadTemplates();
+
+        // Test recognition by using a template path
+        Recognise(templates[0]);
     }
 
     private void LoadTemplates()
@@ -42,8 +45,17 @@ public class GestureRecogniser : MonoBehaviour {
     /*
      * Compare a given StrokePath against the templates
      */
-    public string Recognise(StrokePath _points)
+    public string Recognise(StrokePath _path)
     {
+        // test output of recognition points
+        string test = "";
+        foreach (Vector2 p in _path.Points())
+        {
+            test += "(" + p.x + ", " + p.y + ") ";
+        }
+        Debug.Log(test);
+        // end
+
         if (templates.Count <= 0)
         {
             return "no templates";
@@ -54,8 +66,8 @@ public class GestureRecogniser : MonoBehaviour {
 
         foreach (StrokePath t in templates)
         {
-            float distance = DistanceAtBestAngle(_points.Points(), t, -theta, theta, thetaDelta);
-            Debug.Log(distance);
+            float distance = DistanceAtBestAngle(_path.Points(), t.Points(), -theta, theta, thetaDelta);
+
             if (distance < bestDist)
             {
                 bestDist = distance;
@@ -66,8 +78,8 @@ public class GestureRecogniser : MonoBehaviour {
         float score = 1f - bestDist / 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
         // return both score AND CLOSEST TEMPLATE match
 
-
-        Debug.Log("Recognition result: " + bestTemp.Name() + " Score: " + score);
+        Debug.Log("Best distance average: " + bestDist);
+        Debug.Log("Score: " + score + " Recognition result: " + bestTemp.Name());
 
         //if (bestTemp == null || score < recognitionThreshold)
         //{
@@ -76,14 +88,14 @@ public class GestureRecogniser : MonoBehaviour {
         return bestTemp.Name();
     }
 
-    private float DistanceAtBestAngle(List<Vector2> _points, StrokePath _template, float _thetaA, float _thetaB, float _delta)
+    private float DistanceAtBestAngle(List<Vector2> _points, List<Vector2> _template, float _thetaA, float _thetaB, float _delta)
     {
         float x1 = phi * _thetaA + (1 - phi) * _thetaB;
         float f1 = DistanceAtAngle(_points, _template, x1);
         float x2 = (1 - phi) * _thetaA + phi * _thetaB;
         float f2 = DistanceAtAngle(_points, _template, x2);
 
-        while (_thetaB - _thetaA > _delta)
+        while (Mathf.Abs(_thetaB - _thetaA) > _delta)
         {
             if (f1 < f2)
             {
@@ -108,18 +120,18 @@ public class GestureRecogniser : MonoBehaviour {
     /*
      * Returns the average distance between points on two paths
      */
-    private float DistanceAtAngle(List<Vector2> _points, StrokePath _template, float _theta)
+    private float DistanceAtAngle(List<Vector2> _points, List<Vector2> _template, float _theta)
     {
         List<Vector2> newPoints = Utilities.RotateBy(_points, _theta);
-        float distance = PathDistance(newPoints, _template.Points());
+        float distance = PathDistance(newPoints, _template);
         return distance;
     }
 
     /*
      * Calculates the average distance between all points in both paths
      * 
-     * This is where modifications would work to get differences on a point-by-point basis
-     * or not? After recognising as circle - compare to perfect circle and get values
+     * This is where modifications would work to get differences on a point-by-point basis.
+     * Or not? After recognising as circle - compare to perfect circle and get values.
      */
     private float PathDistance(List<Vector2> _pointsA, List<Vector2> _pointsB)
     {
