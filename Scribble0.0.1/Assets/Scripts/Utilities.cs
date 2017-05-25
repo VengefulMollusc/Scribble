@@ -7,6 +7,8 @@ public class Utilities : MonoBehaviour
 
     /*
      * Resamples a list of raw points into a list of the required length
+     * 
+     * NOT ALWAYS MEETING THE REQUIRED LENGTH
      */
     public static List<Vector2> ResamplePoints(List<Vector2> _rawPoints)
     {
@@ -32,6 +34,19 @@ public class Utilities : MonoBehaviour
             {
                 distance += nextDist;
             }
+        }
+
+        // Insert final point if count too low
+        if (newPoints.Count == GestureRecogniser.resamplePoints - 1)
+        {
+            //Debug.Log("Adding raw path endpoint to equal count");
+            newPoints.Add(_rawPoints[_rawPoints.Count-1]);
+        }
+
+        // Check that point count is correct
+        if (GestureRecogniser.resamplePoints != newPoints.Count)
+        {
+            Debug.LogError("Wrong resample point count: " + newPoints.Count);
         }
         return newPoints;
     }
@@ -89,8 +104,8 @@ public class Utilities : MonoBehaviour
         foreach (Vector2 p in _points)
         {
             Vector2 newP = new Vector2();
-            newP.x = (p.x - c.x) * Mathf.Cos(_angle - (p.y - c.y)) * Mathf.Sin(_angle + c.x);
-            newP.y = (p.x - c.x) * Mathf.Sin(_angle + (p.y - c.y)) * Mathf.Cos(_angle + c.y);
+            newP.x = (p.x - c.x) * Mathf.Cos(_angle) - (p.y - c.y) * Mathf.Sin(_angle) + c.x;
+            newP.y = (p.x - c.x) * Mathf.Sin(_angle) + (p.y - c.y) * Mathf.Cos(_angle) + c.y;
             newPoints.Add(newP);
         }
 

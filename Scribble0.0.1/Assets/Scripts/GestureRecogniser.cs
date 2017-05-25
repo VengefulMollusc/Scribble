@@ -5,13 +5,13 @@ using UnityEngine;
 public class GestureRecogniser : MonoBehaviour {
 
     [SerializeField]
-    public static int resamplePoints = 128;
+    public static int resamplePoints = 64;
 
     [SerializeField]
-    public static float rescaleSize = 250f;
+    public static float rescaleSize = 100f;
 
-    [SerializeField]
-    private float recognitionThreshold = 0.8f;
+    //[SerializeField]
+    //private float recognitionThreshold = 0.8f;
 
     private static float phi = 0.5f * (-1 + Mathf.Sqrt(5));
     private static float theta = 45f;
@@ -19,11 +19,24 @@ public class GestureRecogniser : MonoBehaviour {
 
     private List<StrokePath> templates;
 
+    private TemplateLoader loader;
+
     void Start()
     {
         templates = new List<StrokePath>();
+        loader = GetComponent<TemplateLoader>();
+        if (loader == null) Debug.LogError("No TemplateLoader found");
+
+        LoadTemplates();
+    }
+
+    private void LoadTemplates()
+    {
+        templates = loader.LoadTemplates();
+
         // LOAD TEMPLATES
         if (templates.Count <= 0) Debug.LogError("No gesture templates loaded");
+        Debug.Log(templates.Count + " templates loaded");
     }
 
     /*
@@ -42,7 +55,7 @@ public class GestureRecogniser : MonoBehaviour {
         foreach (StrokePath t in templates)
         {
             float distance = DistanceAtBestAngle(_points.Points(), t, -theta, theta, thetaDelta);
-
+            Debug.Log(distance);
             if (distance < bestDist)
             {
                 bestDist = distance;
@@ -50,13 +63,16 @@ public class GestureRecogniser : MonoBehaviour {
             }
         }
 
-        float score = 1f - bestDist / 0.5f * Mathf.Sqrt(Mathf.Pow(rescaleSize, 2) + Mathf.Pow(rescaleSize, 2));
+        float score = 1f - bestDist / 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
         // return both score AND CLOSEST TEMPLATE match
 
-        if (bestTemp == null || score < recognitionThreshold)
-        {
-            return "no match";
-        }
+
+        Debug.Log("Recognition result: " + bestTemp.Name() + " Score: " + score);
+
+        //if (bestTemp == null || score < recognitionThreshold)
+        //{
+        //    return "no match";
+        //}
         return bestTemp.Name();
     }
 

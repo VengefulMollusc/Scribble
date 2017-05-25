@@ -10,6 +10,9 @@ public class InputController : MonoBehaviour {
     private GameObject drawnPathPrefab;
     private DrawnPath currentPath;
 
+    // delete this later
+    private DrawnPath tempPath;
+
     [SerializeField]
     private float mouseMoveThreshold = 0.1f;
 
@@ -35,13 +38,34 @@ public class InputController : MonoBehaviour {
             if (currentPath != null)
             {
                 Destroy(currentPath.gameObject);
+                Destroy(tempPath.gameObject);
                 currentPath = null;
             }
         }
 
         if (Input.GetMouseButtonUp(0) && drawing)
         {
-            string recognised = gesture.Recognise(currentPath.GetStrokePath());
+            StrokePath path = currentPath.GetStrokePath();
+
+            // draws points to test
+            // Delete section once proper recognition working
+            List<Vector2> points = path.Points();
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                points[i] = new Vector2(points[i].x + Screen.width / 2, points[i].y + Screen.height / 2);
+            }
+
+            tempPath = Instantiate(drawnPathPrefab, gameObject.transform).GetComponent<DrawnPath>();
+            tempPath.Initialize(Camera.main.ScreenToWorldPoint(points[0]), Camera.main.ScreenToWorldPoint(points[1]));
+
+            for (int i = 2; i < points.Count; i++)
+            {
+                tempPath.AddPoint(Camera.main.ScreenToWorldPoint(points[i]));
+            }
+
+
+            string recognised = gesture.Recognise(path);
 
             // RESULT OF GESTURE RECOGNITION HERE
             // EG create circle/line etc

@@ -24,7 +24,6 @@ public class StrokePath
         points = Utilities.RotateBy(points, -indicativeAngle);
         points = Utilities.ScaleTo(points, GestureRecogniser.rescaleSize);
         points = Utilities.TranslateTo(points, Vector2.zero);
-
     }
 
     public List<Vector2> Points()
