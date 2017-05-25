@@ -8,6 +8,7 @@ public class StrokePath
     private string gestureName;
     private List<Vector2> rawPoints;
     private List<Vector2> points; // converted points
+    private List<Vector2> flippedPoints;
     private List<double> vector;
     private float indicativeAngle;
 
@@ -24,6 +25,8 @@ public class StrokePath
         points = Utilities.RotateBy(points, -indicativeAngle);
         points = Utilities.ScaleTo(points, GestureRecogniser.rescaleSize);
         points = Utilities.TranslateTo(points, Vector2.zero);
+        // Flip points vertically to eliminate directional differences
+        flippedPoints = Utilities.FlipVertical(points);
 
         //GetSize();
     }
@@ -49,6 +52,11 @@ public class StrokePath
     public List<Vector2> Points()
     {
         return points;
+    }
+
+    public List<Vector2> FlippedPoints()
+    {
+        return flippedPoints;
     }
 
     public string Name()

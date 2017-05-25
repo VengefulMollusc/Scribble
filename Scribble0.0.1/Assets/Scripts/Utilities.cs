@@ -170,4 +170,21 @@ public class Utilities : MonoBehaviour
         return newPoints;
     }
 
+    /*
+     * Flips points on Y axis to allow direction-independant matching
+     */
+     public static List<Vector2> FlipVertical(List<Vector2> _points)
+    {
+        Vector2 c = Centroid(_points); // should be pretty much (0, 0)
+        if (c.magnitude > 0.01) Debug.LogError("Centroid too far from (0,0) : (" + c.x + ", " + c.y + ")");
+        List<Vector2> newPoints = new List<Vector2>();
+
+        foreach (Vector2 p in _points)
+        {
+            newPoints.Add(new Vector2(p.x, -p.y));
+        }
+
+        return newPoints;
+    }
+
 }

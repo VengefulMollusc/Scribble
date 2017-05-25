@@ -48,12 +48,12 @@ public class GestureRecogniser : MonoBehaviour {
     public string Recognise(StrokePath _path)
     {
         // test output of recognition points
-        string test = "";
-        foreach (Vector2 p in _path.Points())
-        {
-            test += "(" + p.x + ", " + p.y + ") ";
-        }
-        Debug.Log(test);
+        //string test = "";
+        //foreach (Vector2 p in _path.Points())
+        //{
+        //    test += "(" + p.x + ", " + p.y + ") ";
+        //}
+        //Debug.Log(test);
         // end
 
         if (templates.Count <= 0)
@@ -64,16 +64,8 @@ public class GestureRecogniser : MonoBehaviour {
         float bestDist = Mathf.Infinity;
         StrokePath bestTemp = null;
 
-        foreach (StrokePath t in templates)
-        {
-            float distance = DistanceAtBestAngle(_path.Points(), t.Points(), -theta, theta, thetaDelta);
-
-            if (distance < bestDist)
-            {
-                bestDist = distance;
-                bestTemp = t;
-            }
-        }
+        CheckPath(_path.Points(), ref bestDist, ref bestTemp);
+        CheckPath(_path.FlippedPoints(), ref bestDist, ref bestTemp);
 
         float score = 1f - bestDist / 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
         // return both score AND CLOSEST TEMPLATE match
@@ -86,6 +78,20 @@ public class GestureRecogniser : MonoBehaviour {
         //    return "no match";
         //}
         return bestTemp.Name();
+    }
+
+    private void CheckPath(List<Vector2> _points, ref float _bestDist, ref StrokePath _bestTemp)
+    {
+        foreach (StrokePath t in templates)
+        {
+            float distance = DistanceAtBestAngle(_points, t.Points(), -theta, theta, thetaDelta);
+
+            if (distance < _bestDist)
+            {
+                _bestDist = distance;
+                _bestTemp = t;
+            }
+        }
     }
 
     private float DistanceAtBestAngle(List<Vector2> _points, List<Vector2> _template, float _thetaA, float _thetaB, float _delta)
