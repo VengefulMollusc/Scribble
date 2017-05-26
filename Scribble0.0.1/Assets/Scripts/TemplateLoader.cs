@@ -20,10 +20,10 @@ public struct Template
 public struct Point
 {
     [XmlAttribute("X")]
-    public int x;
+    public float x;
 
     [XmlAttribute("Y")]
-    public int y;
+    public float y;
 }
 
 public class TemplateLoader : MonoBehaviour

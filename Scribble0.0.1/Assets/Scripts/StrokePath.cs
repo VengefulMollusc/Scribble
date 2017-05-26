@@ -51,12 +51,12 @@ public class StrokePath
 
     public List<Vector2> Points()
     {
-        return points;
+        return new List<Vector2>(points);
     }
 
     public List<Vector2> FlippedPoints()
     {
-        return flippedPoints;
+        return new List<Vector2>(flippedPoints);
     }
 
     public string Name()

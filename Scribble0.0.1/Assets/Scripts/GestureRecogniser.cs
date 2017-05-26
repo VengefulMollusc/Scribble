@@ -50,11 +50,11 @@ public class GestureRecogniser : MonoBehaviour {
     /*
      * Compare a given StrokePath against the templates
      */
-    public string Recognise(StrokePath _path)
+    public StrokePath Recognise(StrokePath _path)
     {
         if (templates.Count <= 0)
         {
-            return "no templates";
+            return null;
         }
 
         float bestDist = Mathf.Infinity;
@@ -68,16 +68,15 @@ public class GestureRecogniser : MonoBehaviour {
 
         //scoreDivisor = 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
         float score = 1f - bestDist / scoreDivisor;
-        // return both score AND CLOSEST TEMPLATE match
 
-        Debug.Log("Best distance average: " + bestDist);
+        //Debug.Log("Best distance average: " + bestDist);
         Debug.Log("Score: " + score + " Recognition result: " + bestTemp.Name());
 
         //if (bestTemp == null || score < recognitionThreshold)
         //{
         //    return "no match";
         //}
-        return bestTemp.Name();
+        return bestTemp;
     }
 
     private void CheckPath(List<Vector2> _points, ref float _bestDist, ref StrokePath _bestTemp)
