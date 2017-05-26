@@ -79,7 +79,7 @@ public class TemplateLoader : MonoBehaviour
 
             string name = t.name;
             //string name = t.name.Substring(0, t.name.Length - 2);
-            StrokePath newPath = new StrokePath(name, rawPoints);
+            StrokePath newPath = new StrokePath(name, rawPoints, false);
             convertedTemplates.Add(newPath);
         }
 

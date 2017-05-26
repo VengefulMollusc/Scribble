@@ -16,6 +16,7 @@ public class GestureRecogniser : MonoBehaviour {
     private static float phi = 0.5f * (-1 + Mathf.Sqrt(5));
     private static float theta = 45f;
     private static float thetaDelta = 2f;
+    private static float scoreDivisor;
 
     private List<StrokePath> templates;
 
@@ -28,6 +29,10 @@ public class GestureRecogniser : MonoBehaviour {
         if (loader == null) Debug.LogError("No TemplateLoader found");
 
         LoadTemplates();
+
+        // Pre-calculate score divisor
+        // change back to calculating each time if aspect ratio different
+        scoreDivisor = 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
 
         // Test recognition by using a template path
         Recognise(templates[0]);
@@ -47,15 +52,6 @@ public class GestureRecogniser : MonoBehaviour {
      */
     public string Recognise(StrokePath _path)
     {
-        // test output of recognition points
-        //string test = "";
-        //foreach (Vector2 p in _path.Points())
-        //{
-        //    test += "(" + p.x + ", " + p.y + ") ";
-        //}
-        //Debug.Log(test);
-        // end
-
         if (templates.Count <= 0)
         {
             return "no templates";
@@ -65,9 +61,13 @@ public class GestureRecogniser : MonoBehaviour {
         StrokePath bestTemp = null;
 
         CheckPath(_path.Points(), ref bestDist, ref bestTemp);
-        CheckPath(_path.FlippedPoints(), ref bestDist, ref bestTemp);
+        if (_path.FlippedPoints() != null)
+        {
+            CheckPath(_path.FlippedPoints(), ref bestDist, ref bestTemp);
+        }
 
-        float score = 1f - bestDist / 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
+        //scoreDivisor = 0.5f * Mathf.Sqrt((rescaleSize * rescaleSize) + (rescaleSize * rescaleSize));
+        float score = 1f - bestDist / scoreDivisor;
         // return both score AND CLOSEST TEMPLATE match
 
         Debug.Log("Best distance average: " + bestDist);

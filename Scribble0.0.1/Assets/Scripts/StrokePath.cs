@@ -17,6 +17,22 @@ public class StrokePath
         gestureName = _name;
         rawPoints = _rawPoints;
 
+        SetupPoints(true);// Default flipping points to true
+    }
+
+    public StrokePath(string _name, List<Vector2> _rawPoints, bool _flipPoints)
+    {
+        gestureName = _name;
+        rawPoints = _rawPoints;
+
+        SetupPoints(_flipPoints);
+    }
+
+    /*
+     * Perform initial setup and conversion of points
+     */
+    private void SetupPoints(bool _flipPoints)
+    {
         // calculate converted points
         points = Utilities.ResamplePoints(rawPoints);
 
@@ -25,29 +41,13 @@ public class StrokePath
         points = Utilities.RotateBy(points, -indicativeAngle);
         points = Utilities.ScaleTo(points, GestureRecogniser.rescaleSize);
         points = Utilities.TranslateTo(points, Vector2.zero);
-        // Flip points vertically to eliminate directional differences
-        flippedPoints = Utilities.FlipVertical(points);
 
-        //GetSize();
+        if (_flipPoints)
+        {
+            // Flip points vertically to eliminate directional differences
+            flippedPoints = Utilities.FlipVertical(points);
+        }
     }
-
-    //private void GetSize()
-    //{
-    //    float minX = points[0].x;
-    //    float minY = points[0].y;
-    //    float maxX = minX;
-    //    float maxY = minY;
-
-    //    for (int i = 1; i < points.Count; i++)
-    //    {
-    //        if (points[i].x < minX) minX = points[i].x;
-    //        if (points[i].y < minY) minY = points[i].y;
-    //        if (points[i].x > maxX) maxX = points[i].x;
-    //        if (points[i].y > maxY) maxY = points[i].y;
-    //    }
-
-    //    Debug.Log("min: " + minX + ", " + minY + "  max: " + maxX + ", " + maxY);
-    //}
 
     public List<Vector2> Points()
     {
